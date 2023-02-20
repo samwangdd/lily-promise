@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES5",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": false,
+    "esModuleInterop": true,
+    "newLine": "LF",
+    "preserveSymlinks": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "rootDir": ".",
+    "outDir": "./",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "paths": {
+      "walle": [
+        "./src/index.ts"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
+    },
+  },
+  "exclude": [
+    "node_modules",
+    "lib"
+  ]
+}
