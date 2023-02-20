@@ -1,11 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/**
- * 基于axios的二次网络请求封装
- */
-// import wxAdapter from '@medlinker/wx-request-sdk';
 import axios, { AxiosInstance, Canceler, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import qs from 'qs';
 
@@ -146,8 +138,6 @@ export class Request<P = {}, D = {}, R = {}> {
     return this;
   }
 
-
-
   /**
    * 发送请求
    * @returns {this}
@@ -188,84 +178,4 @@ export class Request<P = {}, D = {}, R = {}> {
   }
 }
 
-export class Instance {
-  axiosInstance: AxiosInstance;
-
-  requestInstanceConfig: RequestInstanceConfig;
-
-  constructor(axiosInstance: AxiosInstance, requestInstanceConfig: RequestInstanceConfig) {
-    this.axiosInstance = axiosInstance;
-    this.requestInstanceConfig = requestInstanceConfig;
-  }
-
-  get = <P = {}, R = AxiosResponse<{}>>(url: string, config?: RequestBaseConfig) => {
-    return new Request<P, {}, R>(this.axiosInstance, {
-      method: 'get',
-      url,
-      ...this.requestInstanceConfig,
-      ...config
-    });
-  };
-
-  post = <D = {}, R = AxiosResponse<{}>>(url: string, config?: RequestBaseConfig) => {
-    return new Request<{}, D, R>(this.axiosInstance, {
-      method: 'post',
-      url,
-      ...this.requestInstanceConfig,
-      ...config
-    });
-  };
-
-  put = <D = {}, R = AxiosResponse<{}>>(url: string, config?: RequestBaseConfig) => {
-    return new Request<{}, D, R>(this.axiosInstance, {
-      method: 'put',
-      url,
-      ...this.requestInstanceConfig,
-      ...config
-    });
-  };
-
-  delete = <P = {}, R = AxiosResponse<{}>>(url: string, config?: RequestBaseConfig) => {
-    return new Request<P, {}, R>(this.axiosInstance, {
-      method: 'delete',
-      url,
-      ...this.requestInstanceConfig,
-      ...config
-    });
-  };
-
-  interceptor = {
-    req: (func: (req: AxiosRequestConfig) => any) => {
-      this.axiosInstance.interceptors.request.use(func);
-    },
-    res: (func: (res: AxiosResponse<any>) => any) => {
-      this.axiosInstance.interceptors.response.use(func);
-    },
-    error: (func: (err: AxiosError<any>) => any) => {
-      this.axiosInstance.interceptors.response.use(undefined, func);
-    }
-  };
-}
-
-function createInstance(requestInstanceConfig: RequestInstanceConfig = {}) {
-  const { ...axiosConfig } = requestInstanceConfig;
-
-  return new Instance(axios.create(axiosConfig), requestInstanceConfig);
-}
-
-function isCancelError(err: Error) {
-  return axios.isCancel(err);
-}
-
-const defaultInstance = createInstance();
-
-export default {
-  create: createInstance,
-  isCancelError,
-  get: defaultInstance.get,
-  post: defaultInstance.post,
-  put: defaultInstance.put,
-  delete: defaultInstance.delete,
-  defaults: defaultInstance.axiosInstance.defaults,
-  interceptor: defaultInstance.interceptor
-};
+export default Request;
