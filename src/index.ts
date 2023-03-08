@@ -6,7 +6,7 @@ class LilyPromise {
   private _status: STATUS;
   private _value: any;
 
-  constructor(executor) {
+  constructor(executor: (onFulfilled: (value: any) => void, onRejected: (value: any) => void) => void) {
     this._child = null; // 下一个 Promise 实例
     this._deferred = []; // 存储 then 的回调
     this._status = 'pending'; // promise 状态
@@ -14,13 +14,14 @@ class LilyPromise {
 
     try {
       // executor 执行是同步的，防止回调绑定 this
+      // bind(this) 应该是指向实例
       executor(this._onfulfilled.bind(this), this._onrejected.bind(this));
     } catch (error) {
       this._onrejected(error);
     }
   }
 
-  then(onFulfilled?, onRejected?) {
+  then(onFulfilled?: (value: any) => void, onRejected?: (value: any) => void) {
     const child = new LilyPromise(() => { });
     this._child = child;
 
@@ -36,11 +37,11 @@ class LilyPromise {
     return child;
   }
 
-  private _onfulfilled(value) {
+  private _onfulfilled(value: any) {
     if (this._status !== 'pending') return;
 
     if (value && value.then) {
-      value.then((val) => { this._onfulfilled(val) }, (err) => { this._onrejected(err) });
+      value.then((val: any) => { this._onfulfilled(val) }, (err: Error) => { this._onrejected(err) });
       return;
     }
 
@@ -117,13 +118,13 @@ class LilyPromise {
     }
   }
 
-  _reject(error) {
+  _reject(error: any) {
     if (this._child) {
       this._child._onrejected(error);
     }
   }
 
-  _resolve(value) {
+  _resolve(value: any) {
     if (this._child) {
       this._child._onfulfilled(value);
     }
